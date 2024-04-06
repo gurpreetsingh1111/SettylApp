@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import json
+from io import StringIO
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import Sequential
@@ -10,7 +12,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
 import nltk
-
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -91,13 +92,28 @@ def train_model(df):
 def main():
     st.title("🌟Welcome to SettyAI🌟")
 
-    # Upload CSV file
-    st.sidebar.header('1. Upload your CSV data')
-    uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+    # Upload file
+    st.sidebar.header('1. Upload your data')
+    uploaded_file = st.sidebar.file_uploader("Upload your input file", type=["csv", "json"])
 
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
+        if uploaded_file.type == 'text/csv':
+            df = pd.read_csv(uploaded_file)
+        elif uploaded_file.type == 'application/json':
+            data = json.load(uploaded_file)
+            df = pd.DataFrame(data)
+        else:
+            st.error("Invalid file format. Please upload a CSV or JSON file.")
+            return
+
         st.sidebar.success("Dataset loaded successfully.")
+
+        # Convert JSON to CSV if JSON file is uploaded
+        if uploaded_file.type == 'application/json':
+            st.write("Converting JSON to CSV...")
+            csv_file = StringIO()
+            df.to_csv(csv_file, index=False)
+            df = pd.read_csv(StringIO(csv_file.getvalue()))
 
         # Preprocess the data
         df['externalStatus_processed'] = df['externalStatus'].apply(preprocess_text)
@@ -153,10 +169,17 @@ def main():
 
         # Button to download predictable dataset
         if st.button("Download Predictable Data"):
+            df_predicted_actual = pd.DataFrame({
+                'Actual': encoder.inverse_transform(y_test),
+                'Predicted': encoder.inverse_transform(y_pred_classes)
+            })
             csv = df_predicted_actual.to_csv(index=False)
-            b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-            href = f'<a href="data:file/csv;base64,{b64}" download="predicted_data.csv">Download Predictable Data</a>'
-            st.markdown(href, unsafe_allow_html=True)
+            st.download_button(
+                label="Download Predictable Data as CSV",
+                data=csv,
+                file_name='predicted_data.csv',
+                mime='text/csv'
+            )
 
 if __name__ == "__main__":
     main()
