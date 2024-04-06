@@ -88,7 +88,7 @@ def train_model(df):
 
 # Streamlit app
 def main():
-    st.title("Internal Status Prediction")
+    st.title("🌟🚀Welcome to My SettyAI App🚀🌟")
 
     # Upload CSV file
     st.sidebar.header('1. Upload your CSV data')
@@ -111,6 +111,10 @@ def main():
         st.write(f"- Precision: {precision}")
         st.write(f"- Recall: {recall}")
         st.write(f"- F1-score: {f1}")
+
+        # Button to display accuracy
+        if st.button("Show Accuracy"):
+            st.write("Accuracy:", accuracy)
 
         # Calculate evaluation metrics
         metrics = ['Accuracy', 'Precision', 'Recall', 'F1-score']
