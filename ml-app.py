@@ -81,7 +81,7 @@ def train_model(df):
     recall = recall_score(y_test, y_pred_classes, average='weighted')
     f1 = f1_score(y_test, y_pred_classes, average='weighted')
 
-    return model, accuracy, precision, recall, f1
+    return model, accuracy, precision, recall, f1, y_test, y_pred_classes
 
 # Streamlit app
 def main():
@@ -100,7 +100,7 @@ def main():
         df['internalStatus_processed'] = df['internalStatus'].apply(preprocess_text)
 
         # Train the model and get evaluation metrics
-        model, accuracy, precision, recall, f1 = train_model(df)
+        model, accuracy, precision, recall, f1, y_test, y_pred_classes = train_model(df)
 
         # Display evaluation metrics
         st.write("Model Evaluation Metrics:")
