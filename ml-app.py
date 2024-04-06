@@ -54,6 +54,9 @@ def train_model(df):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+    # Print shapes for debugging
+    print(X_train.shape, y_train.shape)
+
     # Determine input shape
     input_shape = X_train.shape[1]
 
