@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 
 # Load the trained model
-model = joblib.load("https://github.com/gurpreetsingh1111/SettylApp/blob/main/trained_model.pkl")
+model = "https://github.com/gurpreetsingh1111/SettylApp/blob/main/trained_model.pkl"
 
 # Define function to predict internal status
 def predict_internal_status(external_status):
