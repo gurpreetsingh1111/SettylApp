@@ -88,7 +88,7 @@ def train_model(df):
 
 # Streamlit app
 def main():
-    st.title("🌟 Welcome to My SettyAI App 🌟")
+    st.title("Internal Status Prediction")
 
     # Upload CSV file
     st.sidebar.header('1. Upload your CSV data')
@@ -116,6 +116,15 @@ def main():
         if st.button("Show Accuracy"):
             st.write("Accuracy:", accuracy)
 
+        # Button to display predictable data
+        if st.button("Predictable Data"):
+            df_predicted_actual = pd.DataFrame({
+                'Actual': encoder.inverse_transform(y_test),
+                'Predicted': encoder.inverse_transform(y_pred_classes)
+            })
+            st.write("Predicted and Actual Data:")
+            st.write(df_predicted_actual)
+
         # Calculate evaluation metrics
         metrics = ['Accuracy', 'Precision', 'Recall', 'F1-score']
         values = [accuracy, precision, recall, f1]
@@ -129,28 +138,6 @@ def main():
         ax.set_ylabel('Score')
         ax.set_ylim(0.9, 1)  # Set y-axis limit to better visualize differences
         st.pyplot(fig)
-
-        # Plot actual vs predicted data
-        st.write("Plot of Actual vs Predicted Data:")
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.plot(y_test, label='Actual', color='blue')
-        ax.plot(y_pred_classes, label='Predicted', color='red', linestyle='dashed')
-        ax.set_title('Actual vs Predicted Data')
-        ax.set_xlabel('Data Point')
-        ax.set_ylabel('Class')
-        ax.legend()
-        st.pyplot(fig)
-
-        # Create DataFrame for predicted and actual data
-        df_predicted_actual = pd.DataFrame({
-            'Actual': encoder.inverse_transform(y_test),
-            'Predicted': encoder.inverse_transform(y_pred_classes)
-        })
-
-        # Provide download button for predicted and actual data
-        st.write("Download predicted and actual data:")
-        csv = df_predicted_actual.to_csv(index=False)
-        st.download_button(label="Download Data", data=csv, file_name='predicted_actual_data.csv', mime='text/csv')
 
 if __name__ == "__main__":
     main()
