@@ -138,6 +138,17 @@ def main():
         ax.set_ylabel('Score')
         ax.set_ylim(0.9, 1)  # Set y-axis limit to better visualize differences
         st.pyplot(fig)
+        
+        # Plot actual vs predicted data
+        st.write("Plot of Actual vs Predicted Data:")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(y_test, label='Actual', color='blue')
+        ax.plot(y_pred_classes, label='Predicted', color='red', linestyle='dashed')
+        ax.set_title('Actual vs Predicted Data')
+        ax.set_xlabel('Data Point')
+        ax.set_ylabel('Class')
+        ax.legend()
+        st.pyplot(fig)
 
         # Button to download predictable dataset
         if st.button("Download Predictable Data"):
