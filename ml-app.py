@@ -88,7 +88,7 @@ def train_model(df):
 
 # Streamlit app
 def main():
-    st.title("🌟🚀Welcome to My SettyAI App🚀🌟")
+    st.title("🌟 Welcome to My SettyAI App 🌟")
 
     # Upload CSV file
     st.sidebar.header('1. Upload your CSV data')
