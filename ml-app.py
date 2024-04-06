@@ -112,32 +112,18 @@ def main():
         st.write(f"- Recall: {recall}")
         st.write(f"- F1-score: {f1}")
 
-        # User input for prediction
-        st.write("Enter an external status description to predict the internal status.")
-        external_status = st.text_input("External Status Description:")
+        # Calculate evaluation metrics
+        metrics = ['Accuracy', 'Precision', 'Recall', 'F1-score']
+        values = [accuracy, precision, recall, f1]
 
-        if st.button("Predict"):
-            if external_status:
-                # Preprocess input for prediction
-                vectorizer = CountVectorizer()
-                external_status_encoded = vectorizer.fit_transform([external_status])
-                external_status_encoded = external_status_encoded.toarray()
-
-                # Make prediction
-                predicted_label = model.predict(external_status_encoded)[0]
-                st.success(f"Predicted Internal Status: {predicted_label}")
-            else:
-                st.warning("Please enter an external status description.")
-
-        # Plot actual vs predicted data
-        st.write("Plot of Actual vs Predicted Data:")
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.plot(y_test, label='Actual', color='blue')
-        ax.plot(y_pred_classes, label='Predicted', color='red', linestyle='dashed')
-        ax.set_title('Actual vs Predicted Data')
-        ax.set_xlabel('Data Point')
-        ax.set_ylabel('Class')
-        ax.legend()
+        # Create bar plot
+        st.write("Bar plot of Model Evaluation Metrics:")
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.bar(metrics, values, color=['blue', 'green', 'orange', 'red'])
+        ax.set_title('Model Evaluation Metrics')
+        ax.set_xlabel('Metrics')
+        ax.set_ylabel('Score')
+        ax.set_ylim(0.9, 1)  # Set y-axis limit to better visualize differences
         st.pyplot(fig)
 
 if __name__ == "__main__":
