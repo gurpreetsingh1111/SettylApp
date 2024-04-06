@@ -38,6 +38,51 @@ def preprocess_text(text):
     preprocessed_text = ' '.join(lemmatized_tokens)
     return preprocessed_text
 
+# Function to preprocess and train the model
+def train_model(df):
+    # Preprocess the data
+    X = df['externalStatus']
+    y = df['internalStatus']
+    encoder = LabelEncoder()
+    y = encoder.fit_transform(y)
+
+    # Tokenize and encode the input data
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform(X)
+    X = X.toarray()
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Determine input shape
+    input_shape = X_train.shape[1]
+
+    # Build the model architecture
+    model = Sequential([
+        Dense(128, activation='relu', input_shape=(input_shape,)),
+        Dropout(0.2),
+        Dense(64, activation='relu'),
+        Dropout(0.2),
+        Dense(len(encoder.classes_), activation='softmax')
+    ])
+
+    # Compile the model
+    optimizer = Adam(learning_rate=0.001)
+    model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+    # Train the model
+    history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.1, verbose=0)
+
+    # Evaluate the model
+    y_pred = model.predict(X_test)
+    y_pred_classes = np.argmax(y_pred, axis=1)
+    accuracy = accuracy_score(y_test, y_pred_classes)
+    precision = precision_score(y_test, y_pred_classes, average='weighted')
+    recall = recall_score(y_test, y_pred_classes, average='weighted')
+    f1 = f1_score(y_test, y_pred_classes, average='weighted')
+
+    return model, accuracy, precision, recall, f1
+
 # Streamlit app
 def main():
     st.title("Internal Status Prediction")
