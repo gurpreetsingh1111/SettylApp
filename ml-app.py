@@ -88,7 +88,7 @@ def train_model(df):
 
 # Streamlit app
 def main():
-    st.title("🌟Welcome to SettyAI🌟")
+    st.title("Internal Status Prediction")
 
     # Upload CSV file
     st.sidebar.header('1. Upload your CSV data')
@@ -138,6 +138,13 @@ def main():
         ax.set_ylabel('Score')
         ax.set_ylim(0.9, 1)  # Set y-axis limit to better visualize differences
         st.pyplot(fig)
+
+        # Button to download predictable dataset
+        if st.button("Download Predictable Data"):
+            csv = df_predicted_actual.to_csv(index=False)
+            b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+            href = f'<a href="data:file/csv;base64,{b64}" download="predicted_data.csv">Download Predictable Data</a>'
+            st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
